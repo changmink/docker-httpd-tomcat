@@ -1,0 +1,5 @@
+FROM httpd_tomcat_java8
+
+WORKDIR /home/irteam/
+RUN chmod +x run.sh
+CMD ./run.sh
