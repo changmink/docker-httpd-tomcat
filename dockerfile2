@@ -1,5 +1,12 @@
 FROM httpd_tomcat_java8
 
+## deploy
+WORKDIR /home/irteam/tomcat
+RUN rm -rf /home/irteam/tomcat/webapps
+COPY /target/docker-tomcat-1.0-SNAPSHOT.war /home/irteam/tomcat/webapps/
+ADD server.xml ./conf
+
+## RUN
 WORKDIR /home/irteam/
 RUN chmod +x run.sh
 CMD ./run.sh

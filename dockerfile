@@ -8,19 +8,11 @@ RUN yum -y install wget
 # JAVA
 RUN yum -y install java-1.8.0-openjdk
 
-
 # TOMCAT
 RUN wget -P /home/irteam/ http://apache.tt.co.kr/tomcat/tomcat-7/v7.0.92/bin/apache-tomcat-7.0.92.tar.gz
 RUN tar -xvzf /home/irteam/apache-tomcat-7.0.92.tar.gz -C /home/irteam
 WORKDIR /home/irteam
 RUN ln -s apache-tomcat-7.0.92 tomcat
-WORKDIR /home/irteam/tomcat
-
-
-## deploy
-RUN rm -rf /home/irteam/tomcat/webapps
-COPY ./target/docker-tomcat-1.0-SNAPSHOT.war /home/irteam/tomcat/webapps/
-ADD server.xml ./conf
 
 # HTTPD & Tomcat Connector
 RUN yum -y install httpd-devel apr apr-devel apr-util apr-util-devel gcc gcc-c++ make autoconf libtool
@@ -42,6 +34,11 @@ COPY mod_jk.conf /etc/httpd/conf.d/mod_jk.conf
 COPY workers.properties /etc/httpd/conf/workers.properties
 RUN mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.temp
 
+## deploy
+WORKDIR /home/irteam/tomcat
+RUN rm -rf /home/irteam/tomcat/webapps
+ADD ./target/*.war /home/irteam/tomcat/webapps/
+ADD server.xml ./conf
 
 # Start server
 EXPOSE 8080 80
